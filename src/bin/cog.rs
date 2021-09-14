@@ -1,5 +1,3 @@
-use std::process::exit;
-
 use anyhow::{Context, Result};
 use clap::{App, AppSettings, Arg, Shell, SubCommand};
 
@@ -68,16 +66,10 @@ fn main() -> Result<()> {
                 let subcommand = matches.subcommand_matches(VERIFY).unwrap();
                 let message = subcommand.value_of("message").unwrap();
                 let author = CocoGitto::get()
-                    .map(|cogito| cogito.get_committer().unwrap())
+                    .map(|cocogitto| cocogitto.get_committer().unwrap())
                     .ok();
 
-                match commit::verify(author, message) {
-                    Ok(()) => exit(0),
-                    Err(err) => {
-                        eprintln!("{}", err);
-                        exit(1);
-                    }
-                }
+                commit::verify(author, message)?;
             }
 
             CHECK => {
